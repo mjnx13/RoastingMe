@@ -37,27 +37,29 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
-            if (item.getItemId() == R.id.nav_home) {
+            if (itemId == R.id.nav_home) {
                 return showMainTab(
                         "tab_home",
-                        ProfileFragment.class
+                        HomeFragment.class
                 );
-            } else if (item.getItemId() == R.id.nav_calendar) {
+            } else if (itemId == R.id.nav_calendar) {
                 return showMainTab(
                         "tab_calendar",
-                        ProfileFragment.class
+                        CalendarFragment.class
                 );
-            } else if (item.getItemId() == R.id.nav_newaction) {
+            } else if (itemId == R.id.nav_newaction) {
+                Toast.makeText(
+                        MainActivity.this,
+                        "출시 예정 기능!",
+                        Toast.LENGTH_SHORT
+                ).show();
+                return false;
+            } else if (itemId == R.id.nav_shopping) {
                 return showMainTab(
-                        "tab_newAction",
-                        ProfileFragment.class
+                        "tab_shop",
+                        ShopFragment.class
                 );
-            } else if (item.getItemId() == R.id.nav_shopping) {
-                return showMainTab(
-                        "tab_shopping",
-                        ProfileFragment.class
-                );
-            } else if (item.getItemId() == R.id.nav_settinglist) {
+            } else if (itemId == R.id.nav_settinglist) {
                 return showMainTab(
                         "tab_profile",
                         ProfileFragment.class
@@ -66,6 +68,10 @@ public class MainActivity extends AppCompatActivity {
 
             return false;
         });
+
+        if (savedInstanceState == null) {
+            bottomNavigation.setSelectedItemId(R.id.nav_home);
+        }
 
 // 처음에는 홈 선택, 재생성 시에는 이전 선택 복원
         int selectedTab = savedInstanceState == null
