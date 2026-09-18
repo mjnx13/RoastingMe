@@ -1,20 +1,32 @@
 package com.example.roastingme;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.core.view.GravityCompat;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Lifecycle;
+
 import android.widget.TextView;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
+    private DrawerLayout drawerLayout;
+    private OnBackPressedCallback drawerBackCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        TextView pageTitle = findViewById(R.id.tv_page_title);
+        setupSettingsDrawer();
 
         BottomNavigationView bottomNavigation =
                 findViewById(R.id.bottom_navigation);
@@ -25,21 +37,31 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
-            if (itemId == R.id.nav_home) {
-                pageTitle.setText("RoastingMe 홈");
-                return true;
-            } else if (itemId == R.id.nav_calendar) {
-                pageTitle.setText("청소 일지");
-                return true;
-            } else if (itemId == R.id.nav_newaction) {
-                pageTitle.setText("청소 기록 생성");
-                return true;
-            } else if (itemId == R.id.nav_shopping) {
-                pageTitle.setText("제품 추천");
-                return true;
-            } else if (itemId == R.id.nav_settinglist) {
-                pageTitle.setText("설정");
-                return true;
+            if (item.getItemId() == R.id.nav_home) {
+                return showMainTab(
+                        "tab_home",
+                        ProfileFragment.class
+                );
+            } else if (item.getItemId() == R.id.nav_calendar) {
+                return showMainTab(
+                        "tab_calendar",
+                        ProfileFragment.class
+                );
+            } else if (item.getItemId() == R.id.nav_newaction) {
+                return showMainTab(
+                        "tab_newAction",
+                        ProfileFragment.class
+                );
+            } else if (item.getItemId() == R.id.nav_shopping) {
+                return showMainTab(
+                        "tab_shopping",
+                        ProfileFragment.class
+                );
+            } else if (item.getItemId() == R.id.nav_settinglist) {
+                return showMainTab(
+                        "tab_profile",
+                        ProfileFragment.class
+                );
             }
 
             return false;
@@ -64,5 +86,143 @@ public class MainActivity extends AppCompatActivity {
         );
 
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+
+        if (drawerLayout != null && drawerBackCallback != null) {
+            drawerBackCallback.setEnabled(
+                    drawerLayout.isDrawerVisible(GravityCompat.END)
+            );
+        }
+    }
+
+    private void setupSettingsDrawer() {
+        drawerLayout = findViewById(R.id.main);
+
+        NavigationView settingsNavigation =
+                findViewById(R.id.settings_navigation);
+
+        // 다른 탭에서 가장자리 스와이프로 열리지 않도록 설정.
+        // openDrawer()를 통한 버튼 열기는 가능.
+        drawerLayout.setDrawerLockMode(
+                DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
+                GravityCompat.END
+        );
+
+        drawerBackCallback = new OnBackPressedCallback(false) {
+            @Override
+            public void handleOnBackPressed() {
+                drawerLayout.closeDrawer(GravityCompat.END);
+            }
+        };
+
+        getOnBackPressedDispatcher().addCallback(
+                this,
+                drawerBackCallback
+        );
+
+        drawerLayout.addDrawerListener(
+                new DrawerLayout.SimpleDrawerListener() {
+                    @Override
+                    public void onDrawerSlide(
+                            @NonNull View drawerView,
+                            float slideOffset
+                    ) {
+                        drawerBackCallback.setEnabled(slideOffset > 0f);
+                    }
+
+                    @Override
+                    public void onDrawerOpened(
+                            @NonNull View drawerView
+                    ) {
+                        drawerBackCallback.setEnabled(true);
+                    }
+
+                    @Override
+                    public void onDrawerClosed(
+                            @NonNull View drawerView
+                    ) {
+                        drawerBackCallback.setEnabled(false);
+                    }
+                }
+        );
+
+        settingsNavigation.setNavigationItemSelectedListener(item -> {
+            drawerLayout.closeDrawer(GravityCompat.END);
+
+            // 현재는 클릭 확인용. 이후 상세 Fragment로 연결.
+            Toast.makeText(
+                    this,
+                    item.getTitle(),
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            return true;
+        });
+    }
+
+    private boolean showMainTab(
+            String tag,
+            Class<? extends Fragment> fragmentClass
+    ) {
+        FragmentManager manager = getSupportFragmentManager();
+
+        if (manager.isStateSaved()) {
+            return false;
+        }
+
+        Fragment target = manager.findFragmentByTag(tag);
+
+        FragmentTransaction transaction =
+                manager.beginTransaction()
+                        .setReorderingAllowed(true);
+
+        // 현재 본문에 있는 기본 탭들을 숨김
+        for (Fragment fragment : manager.getFragments()) {
+            if (fragment.getId() == R.id.content_container
+                    && fragment.isAdded()) {
+                transaction.hide(fragment);
+                transaction.setMaxLifecycle(
+                        fragment,
+                        Lifecycle.State.STARTED
+                );
+            }
+        }
+
+        if (target == null) {
+            target = manager.getFragmentFactory().instantiate(
+                    getClassLoader(),
+                    fragmentClass.getName()
+            );
+
+            transaction.add(
+                    R.id.content_container,
+                    target,
+                    tag
+            );
+        } else {
+            transaction.show(target);
+        }
+
+        transaction.setMaxLifecycle(
+                target,
+                Lifecycle.State.RESUMED
+        );
+
+        transaction.setPrimaryNavigationFragment(target);
+
+        // 기본 탭 이동은 뒤로가기 기록에 쌓지 않음
+        transaction.commitNow();
+
+        return true;
+    }
+
+
+    public void openSettingsDrawer() {
+        drawerBackCallback.setEnabled(true);
+        drawerLayout.openDrawer(GravityCompat.END);
     }
 }
