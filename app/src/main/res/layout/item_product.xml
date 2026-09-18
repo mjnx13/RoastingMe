@@ -4,23 +4,25 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
 
-    <TextView
+    <ImageView
+        android:id="@+id/iv_product_image"
         android:layout_width="match_parent"
         android:layout_height="160dp"
-        android:gravity="center"
         android:background="#F3F4F6"
-        android:text="상품 이미지"
-        android:textColor="#9CA3AF"
-        android:textSize="14sp" />
+        android:scaleType="centerCrop"
+        android:importantForAccessibility="no" />
 
     <TextView
-        android:id="@+id/tv_product_brand"
+        android:id="@+id/tv_product_mall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:textColor="#111827"
+        android:textColor="#7C3AED"
         android:textSize="13sp"
         android:textStyle="bold"
         android:maxLines="1"
@@ -42,9 +44,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
         android:textColor="#111827"
         android:textSize="17sp"
         android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="16dp"
+        android:text="쇼핑몰에서 보기"
+        android:textColor="#6B7280"
+        android:textSize="12sp" />
 
 </LinearLayout>
