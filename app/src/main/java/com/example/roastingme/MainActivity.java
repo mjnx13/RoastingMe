@@ -1,5 +1,6 @@
 package com.example.roastingme;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -14,7 +15,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 
-import android.widget.TextView;
+import com.example.roastingme.network.TokenManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
@@ -79,6 +80,19 @@ public class MainActivity extends AppCompatActivity {
                 : savedInstanceState.getInt("selected_tab", R.id.nav_home);
 
         bottomNavigation.setSelectedItemId(selectedTab);
+
+        // 통신 확인용 임시 진입 코드 (Debug 빌드 및 자동 로그인 미완료 시에만 동작)
+        if (BuildConfig.DEBUG && savedInstanceState == null) {
+            TokenManager tokenManager = TokenManager.getInstance(this);
+
+            // 저장된 토큰이 없는 경우에만 로그인 화면으로 임시 이동
+            if (tokenManager.getAccessToken() == null) {
+                Intent intent = new Intent(this, LoginActivity.class);
+                // 로그인 화면 진입 후 뒤로가기 시 앱이 종료되도록 설정하려면 아래 주석 해제
+                // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        }
     }
 
     @Override
