@@ -25,7 +25,7 @@ android {
         }
         release {
             // 상용 빌드: 운영 서버 HTTPS 주소
-            buildConfigField("String", "BASE_URL", "\"https://api.roastingme.com/\"")
+            buildConfigField("String", "BASE_URL", "\"https://api.roastingme.site/\"")
 
             // 기존 release 설정 유지가 필요한 경우
             optimization {
