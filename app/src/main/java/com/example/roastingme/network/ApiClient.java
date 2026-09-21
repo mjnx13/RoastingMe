@@ -13,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public final class ApiClient {
 
-    private static final String BASE_URL = "http://10.0.2.2:8080/";
+    private static final String BASE_URL = BuildConfig.BASE_URL;
     private static final HttpUrl SERVER_URL = HttpUrl.get(BASE_URL);
 
     private static volatile ApiClient instance;
