@@ -3,6 +3,8 @@ package com.example.roastingme.network;
 import android.content.Context;
 import androidx.annotation.NonNull;
 
+import com.example.roastingme.BuildConfig;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.HttpUrl;
