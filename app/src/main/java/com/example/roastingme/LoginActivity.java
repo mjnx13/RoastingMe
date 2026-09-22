@@ -1,12 +1,16 @@
 package com.example.roastingme;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -27,6 +31,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailInput;
     private EditText passwordInput;
     private Button loginButton;
+    private Button signupButton; // 회원가입 버튼 추가
     private TextView resultText;
 
     private ApiClient apiClient;
@@ -34,6 +39,31 @@ public class LoginActivity extends AppCompatActivity {
 
     private Call<LoginResponse> loginCall;
     private Call<MeResponse> meCall;
+
+    // 회원가입 액티비티 콜백 결과 수신 처리
+    private final ActivityResultLauncher<Intent> signupLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        if (result.getResultCode() != RESULT_OK || result.getData() == null) {
+                            return;
+                        }
+
+                        String email = result.getData().getStringExtra(
+                                SignupActivity.EXTRA_SIGNUP_EMAIL
+                        );
+
+                        // 가입된 이메일 자동 입력 및 비밀번호 초기화
+                        emailInput.setText(email == null ? "" : email);
+                        passwordInput.setText("");
+                        passwordInput.requestFocus();
+
+                        // 비밀번호 입력창 키보드 자동 올리기 (UX 개선)
+                        showSoftKeyboard(passwordInput);
+
+                        showResult("회원가입이 완료됐습니다. 로그인해 주세요.");
+                    }
+            );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +90,7 @@ public class LoginActivity extends AppCompatActivity {
         emailInput = findViewById(R.id.edit_email);
         passwordInput = findViewById(R.id.edit_password);
         loginButton = findViewById(R.id.btn_login);
+        signupButton = findViewById(R.id.btn_open_signup); // 회원가입 버튼 바인딩
         resultText = findViewById(R.id.text_login_result);
 
         // 이전 단계에서 완성한 싱글톤 인스턴스 연동
@@ -67,6 +98,13 @@ public class LoginActivity extends AppCompatActivity {
         tokenManager = TokenManager.getInstance(getApplicationContext());
 
         loginButton.setOnClickListener(view -> login());
+
+        // 회원가입 화면 이동 이벤트
+        signupButton.setOnClickListener(view ->
+                signupLauncher.launch(
+                        new Intent(this, SignupActivity.class)
+                )
+        );
 
         // 자동 로그인 체크: 이미 저장된 토큰이 있으면 곧바로 내 정보 조회
         checkAutoLogin();
@@ -207,12 +245,24 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setLoading(boolean loading) {
         loginButton.setEnabled(!loading);
+        if (signupButton != null) {
+            signupButton.setEnabled(!loading);
+        }
         emailInput.setEnabled(!loading);
         passwordInput.setEnabled(!loading);
     }
 
     private void showResult(String message) {
         resultText.setText(message);
+    }
+
+    private void showSoftKeyboard(EditText editText) {
+        editText.postDelayed(() -> {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+            }
+        }, 100);
     }
 
     @Override
