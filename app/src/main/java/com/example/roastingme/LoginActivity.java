@@ -7,6 +7,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -216,10 +217,21 @@ public class LoginActivity extends AppCompatActivity {
                 MeResponse me = response.body();
 
                 if (response.isSuccessful() && me != null) {
-                    showResult("인증 성공!\n" + me.getNickname() + "님 환영합니다.");
+                    // 1. 닉네임 Null 및 빈 값 방어 처리
+                    String nickname = (me.getNickname() != null && !me.getNickname().trim().isEmpty())
+                            ? me.getNickname()
+                            : "회원";
 
-                    // TODO: 메인 화면 진입 처리 예시
-                    // navigateToMainActivity();
+                    // 2. Application Context 기반 Toast 출력
+                    Toast.makeText(
+                            getApplicationContext(),
+                            nickname + "님, 환영합니다.",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
+                    // 3. 호출한 이전 화면으로 RESULT_OK 반환 후 액티비티 종료
+                    setResult(RESULT_OK);
+                    finish();
                 } else if (response.code() == 401) {
                     tokenManager.clear();
                     showResult("인증이 만료되었습니다. 다시 로그인해 주세요.");
