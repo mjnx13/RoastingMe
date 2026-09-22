@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <!-- 뒤로가기 (텍스트 버튼 유지 시 기존 Button 사용 가능) -->
+    <Button
+        android:id="@+id/btn_edit_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="뒤로" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="프로필 수정"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <!-- Material TextInputLayout 적용: 글자 수 카운트 및 에러 메시지 자동 지원 -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_nickname_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:counterEnabled="true"
+        app:counterMaxLength="50"
+        app:errorEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_profile_nickname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="닉네임 (3~50자)"
+            android:inputType="textPersonName"
+            android:singleLine="true" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_profile_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="저장"
+        android:textColor="#FFFFFF"
+        app:backgroundTint="#7C3AED" />
+
+    <TextView
+        android:id="@+id/text_profile_edit_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:accessibilityLiveRegion="polite" />
+
+</LinearLayout>
