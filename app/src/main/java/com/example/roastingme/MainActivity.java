@@ -39,15 +39,9 @@ public class MainActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             if (itemId == R.id.nav_home) {
-                return showMainTab(
-                        "tab_home",
-                        HomeFragment.class
-                );
+                return showMainTab("tab_home", HomeFragment.class);
             } else if (itemId == R.id.nav_calendar) {
-                return showMainTab(
-                        "tab_calendar",
-                        CalendarFragment.class
-                );
+                return showMainTab("tab_calendar", CalendarFragment.class);
             } else if (itemId == R.id.nav_newaction) {
                 Toast.makeText(
                         MainActivity.this,
@@ -56,43 +50,20 @@ public class MainActivity extends AppCompatActivity {
                 ).show();
                 return false;
             } else if (itemId == R.id.nav_shopping) {
-                return showMainTab(
-                        "tab_shop",
-                        ShopFragment.class
-                );
+                return showMainTab("tab_shop", ShopFragment.class);
             } else if (itemId == R.id.nav_settinglist) {
-                return showMainTab(
-                        "tab_profile",
-                        ProfileFragment.class
-                );
+                return showMainTab("tab_profile", ProfileFragment.class);
             }
 
             return false;
         });
 
-        if (savedInstanceState == null) {
-            bottomNavigation.setSelectedItemId(R.id.nav_home);
-        }
-
-// 처음에는 홈 선택, 재생성 시에는 이전 선택 복원
-        int selectedTab = savedInstanceState == null
+        // 앱 최초 실행 시에는 nav_home 선택, 화면 재창조(화면 회전 등) 시에는 이전 선택 복원 (중복 제거)
+        int selectedTab = (savedInstanceState == null)
                 ? R.id.nav_home
                 : savedInstanceState.getInt("selected_tab", R.id.nav_home);
 
         bottomNavigation.setSelectedItemId(selectedTab);
-
-        // 통신 확인용 임시 진입 코드 (Debug 빌드 및 자동 로그인 미완료 시에만 동작)
-        if (BuildConfig.DEBUG && savedInstanceState == null) {
-            TokenManager tokenManager = TokenManager.getInstance(this);
-
-            // 저장된 토큰이 없는 경우에만 로그인 화면으로 임시 이동
-            if (tokenManager.getAccessToken() == null) {
-                Intent intent = new Intent(this, LoginActivity.class);
-                // 로그인 화면 진입 후 뒤로가기 시 앱이 종료되도록 설정하려면 아래 주석 해제
-                // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-            }
-        }
     }
 
     @Override
