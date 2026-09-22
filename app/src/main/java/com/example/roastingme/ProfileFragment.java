@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -58,6 +59,7 @@ public class ProfileFragment extends Fragment {
         tvNickname = view.findViewById(R.id.tv_nickname);
         tvEmail = view.findViewById(R.id.tv_email);
         btnLogin = view.findViewById(R.id.btn_profile_login);
+        ImageButton btnOpenSettings = view.findViewById(R.id.btn_open_settings);
 
         // 네트워크 및 토큰 매니저 초기화
         apiClient = ApiClient.getInstance(requireContext().getApplicationContext());
@@ -69,6 +71,12 @@ public class ProfileFragment extends Fragment {
                         new Intent(requireContext(), LoginActivity.class)
                 )
         );
+
+        btnOpenSettings.setOnClickListener(v -> {
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).openSettingsDrawer();
+            }
+        });
     }
 
     @Override
