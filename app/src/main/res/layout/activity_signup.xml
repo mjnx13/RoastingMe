@@ -1,10 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SignupActivity">
+    android:fillViewport="true">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- 타이틀 영역 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="회원가입"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="RoastingMe 계정을 생성하고 시작해보세요."
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="14sp" />
+
+        <!-- 1. 이메일 입력 필드 -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_signup_email"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:hint="이메일"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/signup_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="emailAddress"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- 2. 닉네임 입력 필드 -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_signup_nickname"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="닉네임"
+            app:errorEnabled="true"
+            app:helperText="3~50자 사이로 입력해주세요">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/signup_nickname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="textPersonName"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- 3. 비밀번호 입력 필드 -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_signup_password"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="비밀번호"
+            app:endIconMode="password_toggle"
+            app:errorEnabled="true"
+            app:helperText="10자 이상 입력해주세요">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/signup_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="newPassword"
+                android:imeOptions="actionNext"
+                android:inputType="textPassword"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- 4. 비밀번호 확인 입력 필드 -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_signup_password_confirm"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="비밀번호 확인"
+            app:endIconMode="password_toggle"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/signup_password_confirm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="newPassword"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- 5. 가입하기 버튼 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_signup_submit"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="16dp"
+            android:text="가입하기"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:cornerRadius="8dp" />
+
+        <!-- 6. 전체 결과/상태 표시 문구 -->
+        <TextView
+            android:id="@+id/text_signup_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:accessibilityLiveRegion="polite"
+            android:textAlignment="center"
+            android:textColor="?attr/colorError"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+</ScrollView>
