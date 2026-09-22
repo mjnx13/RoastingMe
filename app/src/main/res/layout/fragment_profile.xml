@@ -33,7 +33,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="설정 목록 열기"
             android:padding="12dp"
-            app:srcCompat="@drawable/ic_settinglist"
+            app:srcCompat="@drawable/ic_settinglist1"
             app:tint="?attr/colorPrimary" />
 
     </LinearLayout>
