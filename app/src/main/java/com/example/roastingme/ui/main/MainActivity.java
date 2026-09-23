@@ -1,6 +1,5 @@
-package com.example.roastingme;
+package com.example.roastingme.ui.main;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -15,7 +14,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 
-import com.example.roastingme.network.TokenManager;
+import com.example.roastingme.ui.profile.ProfileFragment;
+import com.example.roastingme.R;
+import com.example.roastingme.ui.shop.ShopFragment;
+import com.example.roastingme.ui.calendar.CalendarFragment;
+import com.example.roastingme.ui.home.HomeFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
