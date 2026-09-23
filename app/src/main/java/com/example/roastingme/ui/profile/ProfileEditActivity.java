@@ -1,4 +1,4 @@
-package com.example.roastingme;
+package com.example.roastingme.ui.profile;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,10 +13,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.roastingme.R;
 import com.example.roastingme.network.ApiClient;
 import com.example.roastingme.network.TokenManager;
 import com.example.roastingme.network.dto.MeResponse;
 import com.example.roastingme.network.dto.UpdateProfileRequest;
+import com.example.roastingme.ui.auth.LoginActivity;
 
 import retrofit2.Call;
 import retrofit2.Callback;
