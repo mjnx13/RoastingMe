@@ -1,4 +1,4 @@
-package com.example.roastingme;
+package com.example.roastingme.data.model;
 
 public class Product {
 

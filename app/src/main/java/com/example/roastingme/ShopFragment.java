@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.roastingme.data.model.Product;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
