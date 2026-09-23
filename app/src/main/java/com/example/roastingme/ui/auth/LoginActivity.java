@@ -1,4 +1,4 @@
-package com.example.roastingme;
+package com.example.roastingme.ui.auth;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +17,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.roastingme.R;
 import com.example.roastingme.network.ApiClient;
 import com.example.roastingme.network.TokenManager;
 import com.example.roastingme.network.dto.LoginRequest;

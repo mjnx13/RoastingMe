@@ -1,6 +1,8 @@
-package com.example.roastingme;
+package com.example.roastingme.ui.home;
 
 import androidx.fragment.app.Fragment;
+
+import com.example.roastingme.R;
 
 public class HomeFragment extends Fragment {
 
