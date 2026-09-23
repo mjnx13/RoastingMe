@@ -109,6 +109,37 @@
                         android:textStyle="bold"
                         app:cornerRadius="12dp" />
 
+                    <!-- 프로필 수정: 테두리 강조 버튼 (Outlined) -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_profile_edit"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:minHeight="48dp"
+                        android:text="프로필 수정"
+                        android:visibility="gone" />
+
+                    <!-- 로그아웃: 보조/경고 성격에 맞춘 텍스트/테두리 버튼 -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_profile_logout"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:minHeight="48dp"
+                        android:text="로그아웃"
+                        android:textColor="#DC2626"
+                        android:visibility="gone"
+                        app:strokeColor="#DC2626" />
+
+                    <TextView
+                        android:id="@+id/tv_profile_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:accessibilityLiveRegion="polite" />
+
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
