@@ -1,4 +1,4 @@
-package com.example.roastingme;
+package com.example.roastingme.ui.profile;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,9 +10,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.example.roastingme.R;
 import com.example.roastingme.network.ApiClient;
 import com.example.roastingme.network.TokenManager;
 import com.example.roastingme.network.dto.MeResponse;
+import com.example.roastingme.ui.auth.LoginActivity;
+import com.example.roastingme.ui.main.MainActivity;
 
 import java.util.Objects;
 
