@@ -52,6 +52,8 @@ android {
     }
 }
 
+val roomVersion = "2.6.1"
+
 dependencies {
     implementation(libs.activity.ktx)
     implementation(libs.appcompat)
@@ -67,7 +69,13 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation("androidx.room:room-runtime:$roomVersion")
+
     testImplementation(libs.junit)
+
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.ext.junit)
+    androidTestImplementation("androidx.room:room-testing:$roomVersion")
+
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
 }
