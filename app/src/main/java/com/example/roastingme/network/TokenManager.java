@@ -103,6 +103,18 @@ public final class TokenManager {
         prefs.edit().putString(KEY_ACCESS_TOKEN, cleanToken).apply();
     }
 
+    public void saveUserId(String userId) {
+        prefs.edit().putString("KEY_USER_ID", userId).apply();
+    }
+
+    public String getUserId() {
+        return prefs.getString("KEY_USER_ID", null);
+    }
+
+    public void clearSession() {
+        prefs.edit().remove("KEY_JWT_TOKEN").remove("KEY_USER_ID").apply();
+    }
+
     public void clear() {
         this.cachedAccessToken = null;
         prefs.edit().remove(KEY_ACCESS_TOKEN).apply();
