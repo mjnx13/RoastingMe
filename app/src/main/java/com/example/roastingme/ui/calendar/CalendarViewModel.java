@@ -15,7 +15,6 @@ import com.example.roastingme.network.TokenManager;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public class CalendarViewModel extends AndroidViewModel {
 
@@ -32,16 +31,12 @@ public class CalendarViewModel extends AndroidViewModel {
         this.repository = new ScheduleRepository(application);
         this.tokenManager = TokenManager.getInstance(application);
 
-        // 1. 초기값 설정 (오늘 날짜 및 현재 로그인 유저 ID)
-        currentUserId.setValue(tokenManager.getUserId());
-        selectedDate.setValue(System.currentTimeMillis());
+        currentUserId.setValue(getEffectiveUserId());
 
-        // 2. selectedDate가 변경될 때마다 DB 쿼리 자동 재연결
         schedules = Transformations.switchMap(selectedDate, dateMillis -> {
             String userId = currentUserId.getValue();
 
-            // userId가 null이거나 날짜가 없으면 빈 목록 반환 (NPE 방지)
-            if (userId == null || userId.isEmpty() || dateMillis == null) {
+            if (userId == null || userId.trim().isEmpty() || dateMillis == null) {
                 MutableLiveData<List<CleaningScheduleEntity>> emptyList = new MutableLiveData<>();
                 emptyList.setValue(Collections.emptyList());
                 return emptyList;
@@ -54,29 +49,41 @@ public class CalendarViewModel extends AndroidViewModel {
         });
     }
 
-    // 날짜 선택 시 호출
     public void setSelectedDate(long dateMillis) {
         selectedDate.setValue(dateMillis);
     }
 
-    // 계정 전환 또는 로그인/로그아웃 시 유저 세션 갱신
     public void refreshUserSession() {
-        String newUserId = tokenManager.getUserId();
-        if (!Objects.equals(currentUserId.getValue(), newUserId)) {
-            currentUserId.setValue(newUserId);
-            // 날짜 변경 이벤트를 재발행하여 switchMap 트리거
-            Long currentDate = selectedDate.getValue();
-            if (currentDate != null) {
-                selectedDate.setValue(currentDate);
-            }
+        String newUserId = getEffectiveUserId();
+        currentUserId.setValue(newUserId);
+
+        Long currentDate = selectedDate.getValue();
+        if (currentDate != null) {
+            selectedDate.setValue(currentDate);
         }
+    }
+
+    // userId가 null이어도 Token이 존재하면 안전한 fallback ID 반환
+    private String getEffectiveUserId() {
+        if (tokenManager == null) return null;
+
+        String userId = tokenManager.getUserId();
+        if (userId != null && !userId.trim().isEmpty()) {
+            return userId;
+        }
+
+        String token = tokenManager.getAccessToken(); // TokenManager 내 토큰 가져오기 메서드
+        if (token != null && !token.trim().isEmpty()) {
+            return "default_user";
+        }
+
+        return null;
     }
 
     public LiveData<List<CleaningScheduleEntity>> getSchedules() {
         return schedules;
     }
 
-    // 완료 상태 토글 (UI 체크박스 클릭 대응)
     public void toggleCompletion(CleaningScheduleEntity schedule) {
         if (schedule == null) return;
         repository.toggleCompletion(
@@ -87,7 +94,6 @@ public class CalendarViewModel extends AndroidViewModel {
         );
     }
 
-    // 하루의 시작 시각 (00:00:00.000) 계산
     private long getStartOfDay(long timeMillis) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timeMillis);
@@ -98,7 +104,6 @@ public class CalendarViewModel extends AndroidViewModel {
         return cal.getTimeInMillis();
     }
 
-    // 다음 날의 시작 시각 (00:00:00.000) 계산
     private long getEndOfDay(long timeMillis) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timeMillis);
