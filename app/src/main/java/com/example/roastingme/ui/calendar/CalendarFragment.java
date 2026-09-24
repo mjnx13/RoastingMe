@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.roastingme.R;
 import com.example.roastingme.data.local.entity.CleaningScheduleEntity;
 import com.example.roastingme.network.TokenManager;
-import com.example.roastingme.ui.schedule.ScheduleEditActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
