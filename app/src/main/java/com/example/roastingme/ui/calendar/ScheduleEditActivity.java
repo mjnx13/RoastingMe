@@ -1,4 +1,4 @@
-package com.example.roastingme.ui.schedule;
+package com.example.roastingme.ui.calendar;
 
 import android.app.TimePickerDialog;
 import android.os.Bundle;
@@ -22,7 +22,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.UUID;
 
 public class ScheduleEditActivity extends AppCompatActivity {
 
