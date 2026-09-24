@@ -40,7 +40,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".ui.schedule.ScheduleEditActivity"
+            android:name=".ui.calendar.ScheduleEditActivity"
             android:exported="false"
             android:label="일정 등록/수정" />
     </application>
