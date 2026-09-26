@@ -3,12 +3,20 @@ package com.example.roastingme.ui.shop;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import android.content.Context;
 
 import com.example.roastingme.data.model.Product;
+import com.example.roastingme.network.ApiClient;
+import com.example.roastingme.network.dto.CleaningPreferenceRequestDto;
+import com.example.roastingme.network.dto.ProductResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ShopViewModel extends ViewModel {
 
@@ -58,17 +66,56 @@ public class ShopViewModel extends ViewModel {
         }
     }
 
+    // AI 기반 청소/정리 용품 맞춤 추천 요청
+    public void fetchRecommendations(Context context, String category, String location, List<String> concerns, String priority) {
+        isLoading.setValue(true);
+
+        CleaningPreferenceRequestDto request = new CleaningPreferenceRequestDto(category, location, concerns, priority);
+
+        // ApiClient.getInstance(context).getShopApi() 로 정적 context 호출 에러 해결
+        ApiClient.getInstance(context).getShopApi().getCleaningRecommendations(request).enqueue(new Callback<List<ProductResponse>>() {
+            @Override
+            public void onResponse(Call<List<ProductResponse>> call, Response<List<ProductResponse>> response) {
+                isLoading.setValue(false);
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Product> products = new ArrayList<>();
+                    for (ProductResponse dto : response.body()) {
+                        products.add(new Product(
+                                dto.getId(),
+                                dto.getName(),
+                                dto.getMallName(),
+                                dto.getPrice(),
+                                dto.getImageUrl(),
+                                dto.getProductUrl()
+                        ));
+                    }
+                    allProducts.clear();
+                    allProducts.addAll(products);
+                    applyFilter();
+                    toastMessage.setValue(new Event<>("선택하신 조건에 꼭 맞는 맞춤 추천 상품이에요!"));
+                } else {
+                    toastMessage.setValue(new Event<>("추천 목록을 불러올 수 없습니다."));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ProductResponse>> call, Throwable t) {
+                isLoading.setValue(false);
+                toastMessage.setValue(new Event<>("네트워크 연결을 확인해주세요."));
+            }
+        });
+    }
+
     // 새로고침 요청
     public void refreshProducts() {
         isLoading.setValue(true);
 
-        // TODO: 추후 백엔드 API / ShopRepository 호출로 교체
+        // TODO: 추후 백엔드 API 호출로 대체 가능
         loadSampleProducts();
         applyFilter();
 
         isLoading.setValue(false);
-        // Event 객체로 감싸서 전달 (회전 시 중복 실행 방지)
-        toastMessage.setValue(new Event<>("예시 상품 목록을 새로고침했어요."));
+        toastMessage.setValue(new Event<>("상품 목록을 새로고침했어요."));
     }
 
     // 검색어 기반 데이터 필터링
