@@ -22,6 +22,7 @@ public final class ApiClient {
 
     private final AuthApi authApi;
     private final UserApi userApi;
+    private final ShopApi shopApi; // 1. ShopApi 필드 추가
 
     private ApiClient(@NonNull Context context) {
         // 네트워크 로그 출력을 위한 Interceptor
@@ -54,6 +55,7 @@ public final class ApiClient {
 
         this.authApi = retrofit.create(AuthApi.class);
         this.userApi = retrofit.create(UserApi.class);
+        this.shopApi = retrofit.create(ShopApi.class); // 2. ShopApi Retrofit 객체 생성
     }
 
     public static ApiClient getInstance(@NonNull Context context) {
@@ -73,5 +75,9 @@ public final class ApiClient {
 
     public UserApi getUserApi() {
         return userApi;
+    }
+
+    public ShopApi getShopApi() { // 3. ShopApi Getter 메서드 추가
+        return shopApi;
     }
 }
