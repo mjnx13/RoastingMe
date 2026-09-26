@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -20,6 +21,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.roastingme.R;
 import com.example.roastingme.data.model.Product;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ShopFragment extends Fragment {
 
@@ -94,6 +98,12 @@ public class ShopFragment extends Fragment {
 
         view.findViewById(R.id.btn_refresh_products)
                 .setOnClickListener(button -> viewModel.refreshProducts());
+
+        // 8. AI 맞춤 추천 버튼 클릭 이벤트 연결 (레이아웃에 btn_ai_recommend 가 있는 경우)
+        View btnAiRecommend = view.findViewById(R.id.btn_ai_recommend);
+        if (btnAiRecommend != null) {
+            btnAiRecommend.setOnClickListener(v -> showCategorySelectionDialog());
+        }
     }
 
     private void setupObservers() {
@@ -101,7 +111,7 @@ public class ShopFragment extends Fragment {
         viewModel.getFilteredProducts().observe(getViewLifecycleOwner(), products -> {
             if (products != null && adapter != null) {
                 adapter.setProducts(products);
-                countText.setText("예시 상품 " + products.size() + "개");
+                countText.setText("상품 " + products.size() + "개");
                 emptyText.setVisibility(products.isEmpty() ? View.VISIBLE : View.GONE);
             }
         });
@@ -123,6 +133,85 @@ public class ShopFragment extends Fragment {
             }
         });
     }
+
+    // =========================================================================
+    // AI 취향 맞춤 추천 선택 다이얼로그 로직
+    // =========================================================================
+
+    // Step 1: 대분류 카테고리 선택
+    private void showCategorySelectionDialog() {
+        String[] categories = {"청소 도구", "정리함", "청소 약품/세제", "인테리어 용품"};
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("어떤 종류의 제품이 필요하신가요?")
+                .setItems(categories, (dialog, which) -> {
+                    String selectedCategory = categories[which];
+                    showLocationSelectionDialog(selectedCategory);
+                })
+                .setNegativeButton("취소", null)
+                .show();
+    }
+
+    // Step 2: 공간 선택
+    private void showLocationSelectionDialog(String category) {
+        String[] locations = {"욕실/화장실", "주방", "침실/옷장", "거실", "베란다/창문"};
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("[" + category + "] 필요한 공간 선택")
+                .setItems(locations, (dialog, which) -> {
+                    String selectedLocation = locations[which];
+                    showConcernsSelectionDialog(category, selectedLocation);
+                })
+                .setNegativeButton("이전", (dialog, which) -> showCategorySelectionDialog())
+                .show();
+    }
+
+    // Step 3: 고민사항 선택 (다중 선택 가능)
+    private void showConcernsSelectionDialog(String category, String location) {
+        String[] concernsOptions = {"곰팡이/물때 제거", "기름때/탄 자국", "좁은 틈새 청소", "수납 공간 부족", "탈취/좋은 향기"};
+        boolean[] checkedItems = new boolean[concernsOptions.length];
+        List<String> selectedConcerns = new ArrayList<>();
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("해결하고 싶은 고민을 모두 선택해주세요")
+                .setMultiChoiceItems(concernsOptions, checkedItems, (dialog, which, isChecked) -> {
+                    checkedItems[which] = isChecked;
+                })
+                .setPositiveButton("다음", (dialog, which) -> {
+                    for (int i = 0; i < concernsOptions.length; i++) {
+                        if (checkedItems[i]) {
+                            selectedConcerns.add(concernsOptions[i]);
+                        }
+                    }
+                    showPrioritySelectionDialog(category, location, selectedConcerns);
+                })
+                .setNegativeButton("이전", (dialog, which) -> showLocationSelectionDialog(category))
+                .show();
+    }
+
+    // Step 4: 우선순위 선택 및 최종 AI 추천 API 호출
+    private void showPrioritySelectionDialog(String category, String location, List<String> concerns) {
+        String[] priorities = {"가성비 중심", "빠르고 쉬운 사용", "디자인/감성", "강력한 성능"};
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("가장 중요하게 생각하는 조건은?")
+                .setItems(priorities, (dialog, which) -> {
+                    String selectedPriority = priorities[which];
+
+                    // ViewModel에 Context와 함께 추천 요청 전달
+                    viewModel.fetchRecommendations(
+                            requireContext(),
+                            category,
+                            location,
+                            concerns,
+                            selectedPriority
+                    );
+                })
+                .setNegativeButton("이전", (dialog, which) -> showConcernsSelectionDialog(category, location))
+                .show();
+    }
+
+    // =========================================================================
 
     private void openProductPage(Product product) {
         String url = product.getProductUrl();
