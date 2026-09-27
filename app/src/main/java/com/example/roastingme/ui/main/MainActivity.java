@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 
+import com.example.roastingme.ui.ai.AiAnalysisFragment;
 import com.example.roastingme.ui.profile.ProfileFragment;
 import com.example.roastingme.R;
 import com.example.roastingme.ui.shop.ShopFragment;
@@ -46,12 +47,8 @@ public class MainActivity extends AppCompatActivity {
             } else if (itemId == R.id.nav_calendar) {
                 return showMainTab("tab_calendar", CalendarFragment.class);
             } else if (itemId == R.id.nav_newaction) {
-                Toast.makeText(
-                        MainActivity.this,
-                        "출시 예정 기능!",
-                        Toast.LENGTH_SHORT
-                ).show();
-                return false;
+                // 기존 토스트 메시지 대신 AI 분석 프래그먼트 연결
+                return showMainTab("tab_ai", AiAnalysisFragment.class);
             } else if (itemId == R.id.nav_shopping) {
                 return showMainTab("tab_shop", ShopFragment.class);
             } else if (itemId == R.id.nav_settinglist) {
